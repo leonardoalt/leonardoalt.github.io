@@ -1,9 +1,10 @@
-title: Leonardo Alt
+title: Leo Alt
 description: Writings
 url: "https://leonardoalt.github.io"
 baseurl: ""
 
 markdown: kramdown
+highlighter: rouge
 permalink: /:title
 
 exclude:

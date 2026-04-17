@@ -1,9 +1,9 @@
 :root {
   --text: #222;
   --muted: #666;
-  --link: #222;
+  --link: #1a6dcc;
   --bg: #fff;
-  --max-width: 640px;
+  --max-width: 780px;
 }
 
 * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -109,6 +109,28 @@ article pre code {
 article img {
   max-width: 100%;
   height: auto;
+}
+
+/* Tables */
+article table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 1rem;
+}
+
+article th, article td {
+  border: 1px solid #ddd;
+  padding: 0.5rem 0.75rem;
+  text-align: left;
+}
+
+article th {
+  background: #f5f5f5;
+  font-weight: 600;
+}
+
+article tr:nth-child(even) {
+  background: #fafafa;
 }
 
 footer {
