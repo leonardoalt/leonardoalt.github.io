@@ -1,0 +1,12 @@
+title: Leonardo Alt
+description: Writings
+url: "https://leonardoalt.github.io"
+baseurl: ""
+
+markdown: kramdown
+permalink: /:title
+
+exclude:
+  - README.md
+  - Gemfile
+  - Gemfile.lock
