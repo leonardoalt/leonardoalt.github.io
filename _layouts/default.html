@@ -39,5 +39,94 @@
     });
     await mermaid.run();
   </script>
+  <script>
+    (function () {
+      const KW = new Set([
+        'def','theorem','lemma','example','instance','class','structure',
+        'inductive','coinductive','abbrev','axiom','opaque','constant',
+        'partial','noncomputable','unsafe','protected','private','mutual',
+        'variable','variables','universe','universes',
+        'notation','infix','infixl','infixr','prefix','postfix',
+        'macro','macro_rules','syntax','elab','attribute',
+        'if','then','else','match','with','do','let','have','show','from',
+        'fun','where','by','return',
+        'open','namespace','end','import','export','section','in','as',
+        'deriving','extends'
+      ]);
+      const DECL = new Set(['def','theorem','lemma','example','instance','class','structure','inductive','abbrev','axiom','opaque','constant']);
+      const KT = new Set(['Prop','Type','Sort','True','False','Nat','Int','Bool','String','Unit','List','Array','Option']);
+      const OP = new Set(Array.from('+-*/<>=≤≥≠←→↔⇒↦∀∃∧∨¬⊢•·×∘⊕⊗∪∩⊆⊇|'));
+      const idStart = /[\p{L}_]/u;
+      const idCont  = /[\p{L}\p{N}_'!?]/u;
+      const upperStart = /^[\p{Lu}]/u;
+      const esc = s => s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+
+      function highlight(src) {
+        let i = 0, out = '';
+        let pendingDecl = false;
+        while (i < src.length) {
+          const c = src[i], n = src[i+1];
+          if (c === '/' && n === '-') {
+            let j = i + 2, d = 1;
+            while (j < src.length && d > 0) {
+              if (src[j] === '/' && src[j+1] === '-') { d++; j += 2; }
+              else if (src[j] === '-' && src[j+1] === '/') { d--; j += 2; }
+              else j++;
+            }
+            out += '<span class="cm">' + esc(src.slice(i, j)) + '</span>';
+            i = j; continue;
+          }
+          if (c === '-' && n === '-') {
+            let j = i;
+            while (j < src.length && src[j] !== '\n') j++;
+            out += '<span class="c1">' + esc(src.slice(i, j)) + '</span>';
+            i = j; continue;
+          }
+          if (c === '"') {
+            let j = i + 1;
+            while (j < src.length && src[j] !== '"') { if (src[j] === '\\') j++; j++; }
+            j = Math.min(j + 1, src.length);
+            out += '<span class="s2">' + esc(src.slice(i, j)) + '</span>';
+            i = j; continue;
+          }
+          if (c === ':' && n === '=') { out += '<span class="o">:=</span>'; i += 2; continue; }
+          if (c === '=' && n === '>') { out += '<span class="o">=&gt;</span>'; i += 2; continue; }
+          if (c === '<' && n === '-') { out += '<span class="o">&lt;-</span>'; i += 2; continue; }
+          if (/\d/.test(c)) {
+            let j = i;
+            while (j < src.length && /[\w.]/.test(src[j])) j++;
+            out += '<span class="mi">' + esc(src.slice(i, j)) + '</span>';
+            i = j; continue;
+          }
+          if (idStart.test(c)) {
+            let j = i + 1;
+            while (j < src.length && idCont.test(src[j])) j++;
+            const w = src.slice(i, j);
+            let cls;
+            if (KW.has(w))            { cls = 'k';  pendingDecl = DECL.has(w); }
+            else if (KT.has(w))       { cls = 'kt'; pendingDecl = false; }
+            else if (pendingDecl)     { cls = 'nf'; pendingDecl = false; }
+            else if (upperStart.test(w)) { cls = 'nc'; }
+            else                      { cls = 'n'; }
+            out += '<span class="' + cls + '">' + esc(w) + '</span>';
+            i = j; continue;
+          }
+          if (OP.has(c)) {
+            let j = i + 1;
+            while (j < src.length && OP.has(src[j])) j++;
+            out += '<span class="o">' + esc(src.slice(i, j)) + '</span>';
+            i = j; continue;
+          }
+          out += esc(c);
+          i++;
+        }
+        return out;
+      }
+
+      document.querySelectorAll('div.language-lean pre.highlight > code, pre > code.language-lean').forEach(el => {
+        el.innerHTML = highlight(el.textContent);
+      });
+    })();
+  </script>
 </body>
 </html>

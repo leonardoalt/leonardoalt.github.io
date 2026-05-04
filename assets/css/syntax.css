@@ -88,8 +88,8 @@
   color: #8250df;
 }
 .highlight .err {
-  color: #f6f8fa;
-  background-color: #82071e;
+  color: inherit;
+  background-color: transparent;
 }
 .highlight .c, .highlight .ch, .highlight .cd, .highlight .cm, .highlight .cp, .highlight .cpf, .highlight .c1, .highlight .cs {
   color: #6e7781;
