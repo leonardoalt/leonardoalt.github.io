@@ -128,5 +128,109 @@
       });
     })();
   </script>
+  <script>
+    (function () {
+      const KW = new Set([
+        'pragma','import','contract','library','interface','abstract','is','using',
+        'function','modifier','event','error','struct','enum','constructor','fallback','receive',
+        'public','private','internal','external','view','pure','payable','virtual','override','returns','return',
+        'if','else','while','do','for','break','continue','try','catch','emit','revert','require','assert',
+        'mapping','memory','storage','calldata','immutable','constant','indexed','anonymous',
+        'new','delete','this','super','unchecked',
+        'assembly','let','switch','case','default',
+        'true','false'
+      ]);
+      const DECL = new Set(['function','modifier','event','error','struct','enum','contract','library','interface']);
+      const KT_FIXED = new Set(['address','bool','string','bytes','byte','var','fixed','ufixed']);
+      const NB = new Set([
+        'keccak256','sha256','sha3','ripemd160','ecrecover','addmod','mulmod','blockhash','gasleft','selfdestruct','suicide',
+        'add','sub','mul','div','sdiv','mod','smod','exp','lt','gt','slt','sgt','eq','iszero','and','or','xor','not','shl','shr','sar','byte','signextend',
+        'sload','sstore','tload','tstore','mload','mstore','mstore8','msize',
+        'call','callcode','delegatecall','staticcall','create','create2',
+        'log0','log1','log2','log3','log4',
+        'calldataload','calldatasize','calldatacopy','codesize','codecopy','returndatasize','returndatacopy','extcodesize','extcodecopy','extcodehash',
+        'balance','caller','callvalue','origin','gasprice','gas','address','chainid','timestamp','number','coinbase','difficulty','prevrandao','gaslimit','basefee','blobbasefee','blobhash','selfbalance',
+        'pop','dup1','swap1','jump','jumpi','jumpdest','stop'
+      ]);
+      const idStart = /[A-Za-z_$]/;
+      const idCont  = /[A-Za-z0-9_$]/;
+      const isType = w => KT_FIXED.has(w) || /^(u?int|bytes)(\d+)?$/.test(w);
+      const esc = s => s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+
+      function highlight(src) {
+        let i = 0, out = '';
+        let pendingDecl = false;
+        while (i < src.length) {
+          const c = src[i], n = src[i+1];
+          if (c === '/' && n === '*') {
+            let j = i + 2;
+            while (j < src.length - 1 && !(src[j] === '*' && src[j+1] === '/')) j++;
+            j = Math.min(j + 2, src.length);
+            out += '<span class="cm">' + esc(src.slice(i, j)) + '</span>';
+            i = j; continue;
+          }
+          if (c === '/' && n === '/') {
+            let j = i;
+            while (j < src.length && src[j] !== '\n') j++;
+            out += '<span class="c1">' + esc(src.slice(i, j)) + '</span>';
+            i = j; continue;
+          }
+          if (c === '"' || c === "'") {
+            const q = c;
+            let j = i + 1;
+            while (j < src.length && src[j] !== q) { if (src[j] === '\\') j++; j++; }
+            j = Math.min(j + 1, src.length);
+            out += '<span class="s2">' + esc(src.slice(i, j)) + '</span>';
+            i = j; continue;
+          }
+          if (c === '0' && (n === 'x' || n === 'X')) {
+            let j = i + 2;
+            while (j < src.length && /[0-9a-fA-F_]/.test(src[j])) j++;
+            out += '<span class="mh">' + esc(src.slice(i, j)) + '</span>';
+            i = j; continue;
+          }
+          if (/\d/.test(c)) {
+            let j = i;
+            while (j < src.length && /[\d_.eE+\-]/.test(src[j])) {
+              if ((src[j] === '+' || src[j] === '-') && !(src[j-1] === 'e' || src[j-1] === 'E')) break;
+              j++;
+            }
+            out += '<span class="mi">' + esc(src.slice(i, j)) + '</span>';
+            i = j; continue;
+          }
+          if (c === ':' && n === '=') { out += '<span class="o">:=</span>'; i += 2; continue; }
+          if (c === '=' && n === '>') { out += '<span class="o">=&gt;</span>'; i += 2; continue; }
+          if (idStart.test(c)) {
+            let j = i + 1;
+            while (j < src.length && idCont.test(src[j])) j++;
+            const w = src.slice(i, j);
+            let cls;
+            if (KW.has(w))         { cls = 'k';  pendingDecl = DECL.has(w); }
+            else if (isType(w))    { cls = 'kt'; pendingDecl = false; }
+            else if (NB.has(w))    { cls = 'nb'; pendingDecl = false; }
+            else if (pendingDecl)  { cls = 'nf'; pendingDecl = false; }
+            else                   { cls = 'n'; }
+            out += '<span class="' + cls + '">' + esc(w) + '</span>';
+            i = j; continue;
+          }
+          if (/[+\-*/%=<>!&|^~?:]/.test(c)) {
+            let j = i + 1;
+            while (j < src.length && /[+\-*/%=<>!&|^~?:]/.test(src[j])) j++;
+            out += '<span class="o">' + esc(src.slice(i, j)) + '</span>';
+            i = j; continue;
+          }
+          out += esc(c);
+          i++;
+        }
+        return out;
+      }
+
+      document.querySelectorAll('div.language-solidity pre.highlight > code, pre > code.language-solidity').forEach(el => {
+        el.innerHTML = highlight(el.textContent);
+        const pre = el.closest('pre');
+        if (pre) pre.classList.add('highlight');
+      });
+    })();
+  </script>
 </body>
 </html>
