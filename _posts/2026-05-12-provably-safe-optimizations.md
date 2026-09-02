@@ -7,7 +7,7 @@ title: "Provably safe EVM optimizations that compilers won't do"
 
 > _tl;dr_: write crazy gas optimizations, prove them safe in Lean, profit.
 
-In the [previous post](https://leonardoalt.github.io/evm-smith), we showed
+In the [previous post](https://leoalt.de/evm-smith), we showed
 that AI can write EVM assembly directly and write proofs about it in
 [Lean](https://lean-lang.org/).
 

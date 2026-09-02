@@ -3,7 +3,7 @@ layout: post
 title: "evm-smith: human-readable smart contract specs in Lean, tied e2e to bytecode"
 ---
 
-In [evm-smith](https://leonardoalt.github.io/evm-smith) we write smart contracts directly in EVM bytecode and prove properties about them in Lean, with no compiler in the trusted base. Most of what I have written so far is about the proof side. This post is about the other side: the spec, the thing a human actually has to read and agree with. I want it to read like a high level language, while staying a real Lean object that the bytecode is proven to satisfy.
+In [evm-smith](https://leoalt.de/evm-smith) we write smart contracts directly in EVM bytecode and prove properties about them in Lean, with no compiler in the trusted base. Most of what I have written so far is about the proof side. This post is about the other side: the spec, the thing a human actually has to read and agree with. I want it to read like a high level language, while staying a real Lean object that the bytecode is proven to satisfy.
 
 Here is the whole behavioural spec of our WETH contract, the part an auditor reads:
 
