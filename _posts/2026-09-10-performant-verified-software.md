@@ -6,9 +6,6 @@ title: "Performant formally verified software"
 Formally verified complex software brings more than quality assurance: it allows for ultra-performant code,
 since you can do all sorts of crazy tricks as long as you prove them safe, a luxury that unverified software does not have.
 
-The nice surprise is how big that effect turns out to be in practice. In the first case below, the verified optimizer
-runs about 10x faster than the Rust code base it replaced.
-
 This has been successful before at [AWS](https://aws.amazon.com/blogs/security/an-unexpected-discovery-automated-reasoning-often-makes-systems-more-efficient-and-easier-to-maintain/), with organic humans writing proofs!
 Now that we can just ask AIs to write Lean proofs for us, we have already seen many instances of such results.
 
@@ -35,21 +32,16 @@ experience with lean-zip, where the Lean code also outperforms the Rust code in 
 
 ## yul-compiler
 
-[yul-compiler](https://github.com/powdr-labs/yul-compiler) is a verified optimizing compiler from Yul to EVM.
+[yul-compiler](https://github.com/powdr-labs/yul-compiler) is an optimizer verified compiler from Yul to EVM.
 Experiments with [Aave and Uniswap tests](https://github.com/powdr-labs/yul-compiler/pull/172#issuecomment-5372651982) show that
-powdr's yul-compiler already generates code whose gas is on par with solc's, and considerably better on some real protocol code.
-This is not surprising, for the same reason presented in the introduction above. A verified compiler is allowed to absolutely
-send it and heavily optimize codegen in any way possible, which would simply be too dangerous for an unverified code base.
+powdr's yul-compiler is already able to generate code with better gas performance than solc. This is not surprising
+for the same argument presented in the introduction above. A verified compiler is allowed to absolutely send it and heavily optimize
+codegen in any way possible, which would simply be too dangerous for an unverified code base.
 
 <figure>
-  <img src="{{ '/assets/yul-compiler.png' | relative_url }}" alt="Table comparing gas of yul-compiler output against solc across the aave-v4, gasTests, semanticTests and uniswap-v4 corpora, totalling 99.8% of solc's gas.">
-  <figcaption>Gas of our output vs solc's. We compile solc's <em>unoptimized</em> <code>--via-ir</code> Yul while solc runs fully optimized. Aave v4 comes out 17% cheaper, the other corpora land within a few percent, and the total is 99.8% of solc's gas.</figcaption>
+  <img src="{{ '/assets/yul-compiler.png' | relative_url }}" alt="Table comparing gas of powdr's yul-compiler output against solc's across the aave-v4, gasTests, semanticTests and uniswap-v4 corpora.">
+  <figcaption>Gas comparison between powdr's yul-compiler and solc on the Aave and Uniswap test corpora.</figcaption>
 </figure>
-
-The comparison is worth reading carefully, because it is stacked against us: we take the Yul that solc emits *before* its own
-optimizer runs, and we compare our output against solc with `--optimize --via-ir` fully on. Matching a mature optimizer from that
-starting point is already a good place to be, and the 17% on Aave v4 hints at what is available once we keep pushing.
-Uniswap v4 and the semantic tests are still a few percent behind, so there is real work left.
 
 ## Autoresearch challenges
 

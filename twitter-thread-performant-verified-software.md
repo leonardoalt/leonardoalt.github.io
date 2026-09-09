@@ -18,11 +18,11 @@ https://kim-em.github.io/blog/2026-7-24-why-lean-is-faster-than-rust/
 
 ---
 
-4/ yul-compiler, our verified optimizing compiler from Yul to EVM.
+4/ yul-compiler, our verified Yul to EVM compiler.
 
-We compile the Yul that solc emits before its own optimizer runs, then compare against solc fully optimized. Total gas: 99.8% of solc's, and Aave v4 comes out 17% cheaper.
+On the Aave and Uniswap tests it already generates code with better gas performance than solc.
 
-A verified compiler gets to send it.
+A verified compiler is allowed to absolutely send it on codegen, in ways that would be too dangerous unverified.
 
 ---
 
