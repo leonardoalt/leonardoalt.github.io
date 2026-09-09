@@ -30,7 +30,7 @@ Each dot is a circuit, and every dot below the "1" line represents a case where 
 ## lean-zip
 
 Kim Morrison [has written](https://kim-em.github.io/blog/2026-7-24-why-lean-is-faster-than-rust/) about a similar
-experience with lean-zip, where the Lean code also outperforms the Rust code in runtime comparisons.
+experience with lean-zip, where the Lean code competes with the Rust code in runtime comparisons.
 
 ## yul-compiler
 
