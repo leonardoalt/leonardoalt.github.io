@@ -1,8 +1,8 @@
 1/ Everyone assumes formal verification is a tax you pay on performance.
 
-It keeps turning out to be the opposite. Once a proof has your back, you can pull all sorts of crazy tricks that would be way too dangerous in unverified code.
+It keeps turning out the opposite. When the proof is the review, nobody audits the crazy trick, so you can let an AI optimize relentlessly and only require the proof still goes through.
 
-A few recent data points:
+A few data points:
 
 ---
 
@@ -12,7 +12,9 @@ It already beat the original Rust on optimization quality. The runtime was the s
 
 ---
 
-3/ And it is not only us. Kim Morrison wrote up lean-zip, where the Lean implementation also outperforms the Rust one.
+3/ Not only us. Kim Morrison's lean-zip tells the same story. His title is tongue in cheek, he is not claiming Lean beats Rust as a language. A proven implementation is one AIs can optimize freely.
+
+30% faster than miniz_oxide, 8.8% better compression.
 
 https://kim-em.github.io/blog/2026-7-24-why-lean-is-faster-than-rust/
 

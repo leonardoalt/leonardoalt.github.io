@@ -3,8 +3,17 @@ layout: post
 title: "Performant formally verified software"
 ---
 
+> _tl;dr_: when the proof is the review, you can let AIs optimize without a human gate.
+> Runtime that was not even a priority a few months ago is now considerably faster than the
+> unverified Rust it replaced, and verified compilers get to absolutely send it on codegen.
+
 Formally verified complex software brings more than quality assurance: it allows for ultra-performant code,
 since you can do all sorts of crazy tricks as long as you prove them safe, a luxury that unverified software does not have.
+
+The mechanism is simple: the proof is the review. Nobody has to sit down and audit every aggressive rewrite, so you can
+point an AI at the code, let it optimize relentlessly, and only require that the proof still goes through. I wrote about this before in
+[provably safe EVM optimizations](https://leoalt.de/provably-safe-optimizations): write crazy gas optimizations, prove them
+safe in Lean, profit.
 
 This has been successful before at [AWS](https://aws.amazon.com/blogs/security/an-unexpected-discovery-automated-reasoning-often-makes-systems-more-efficient-and-easier-to-maintain/), with organic humans writing proofs!
 Now that we can just ask AIs to write Lean proofs for us, we have already seen many instances of such results.
@@ -15,8 +24,10 @@ We [wrote before](https://powdr.org/blog/formally-verified-autoprecompiles) abou
 and the [impact of this new paradigm](https://georgwiese.github.io/posts/formal-verification-ai/) in software engineering.
 
 The posts above show that the new verified apc-optimizer quickly outperformed the original Rust code base in optimization
-metrics. The graph below shows that the verified code is also considerably quicker than the unverified code in runtime.
-Each dot is a circuit, and every dot below the "1" line represents a case where the verified optimizer is faster.
+metrics. Runtime was a different story back then: Georg's post notes that it was still slower than our Rust implementation,
+and that making it fast had not been a priority. That has now flipped. The graph below shows that the verified code is
+considerably quicker than the unverified code in runtime. Each dot is a circuit, and every dot below the "1" line
+represents a case where the verified optimizer is faster.
 
 <figure>
   <img src="{{ '/assets/apc-optimizer.png' | relative_url }}" alt="Scatter plot of the runtime ratio between the verified Lean optimizer and the original powdr Rust optimizer, against circuit size, on log-log axes, with most points falling below the 1 line.">
@@ -26,7 +37,11 @@ Each dot is a circuit, and every dot below the "1" line represents a case where 
 ## lean-zip
 
 Kim Morrison [has written](https://kim-em.github.io/blog/2026-7-24-why-lean-is-faster-than-rust/) about a similar
-experience with lean-zip, where the Lean code also outperforms the Rust code in runtime comparisons.
+experience with lean-zip. The title is tongue in cheek and he says so himself, he is not really claiming that Lean beats
+Rust as a language. What he is claiming is exactly the argument above: because the implementation is proven correct, he
+can let AIs loose optimizing it and only require that they update the proof whenever the implementation materially
+changes. lean-zip ends up 30% faster than miniz_oxide at the default compression level, with 8.8% better compression,
+and about twice as fast at level 9.
 
 ## yul-compiler
 
